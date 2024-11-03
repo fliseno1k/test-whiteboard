@@ -1,5 +1,8 @@
 start:
 	python src/main.py
+
+start-hot:
+	python src/hot_reload.py
 	
 install:
 	pip install -r requirements.txt
