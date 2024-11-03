@@ -5,8 +5,6 @@ from PySide6.QtCore import Qt
 
 class CanvasWidget(QWidget):
 
-    grid_size: int = 20
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -17,25 +15,26 @@ class CanvasWidget(QWidget):
         painter.translate(0, 0)
         painter.fillRect(self.rect(), Qt.white)
 
-        self.draw_grid(painter)
+        self.__draw_grid(painter)
 
         painter.end()
 
-    def draw_grid(self, painter: QPainter):
+    def __draw_grid(self, painter: QPainter):
         rect = self.rect()
         left = rect.left()
         top = rect.top()
         right = rect.right()
         bottom = rect.bottom()
+        grid_size = 20
 
         painter.setPen(QPen(QColor(200, 200, 200), 1))
 
         x = left
         while x <= right:
             painter.drawLine(x, top, x, bottom)
-            x += self.grid_size
+            x += grid_size
 
         y = top
         while y <= bottom:
             painter.drawLine(left, y, right, y)
-            y += self.grid_size
+            y += grid_size
