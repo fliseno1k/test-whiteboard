@@ -16,8 +16,7 @@ class EditorView(QWidget):
         self.__init_UI()
 
     def __init_editor(self):
-        options_builder = OptionsBuilder()
-        self.__editor = Editor(options_builder.build())
+        self.__editor = Editor(OptionsBuilder().build())
 
     def __init_UI(self):
         layout = QVBoxLayout()
