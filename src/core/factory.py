@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from core.shapes import Rectangle, Connector
+
 if TYPE_CHECKING:
     from core.editor import Editor
 
@@ -11,7 +13,11 @@ class ShapeFactory:
         self
 
     def create_rectangle(self):
-        None
+        shape = Rectangle()
+
+        return shape
 
     def create_connector(self):
-        None
+        shape = Connector()
+
+        return shape
