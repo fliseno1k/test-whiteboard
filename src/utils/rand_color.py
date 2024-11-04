@@ -1,10 +1,15 @@
 import random
-from PySide6.QtGui import QColor
+from typing import Callable, TypeVar
+
+T = TypeVar("T")
 
 
-def rand_color():
-    r = random.randint(0, 255)
-    g = random.randint(0, 255)
-    b = random.randint(0, 255)
+def random_color_factory(constructor: Callable[[int, int, int], T]):
+    def create_color():
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
 
-    return QColor(r, g, b)
+        return constructor(r, g, b)
+
+    return create_color
