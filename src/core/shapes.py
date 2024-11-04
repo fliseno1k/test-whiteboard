@@ -11,11 +11,16 @@ if TYPE_CHECKING:
 class Shape(ABC):
     def __init__(self):
         self.id = generate_id()
+
         self.left: int = 0
         self.top: int = 0
         self.width: int = 0
         self.height: int = 0
+
         self.background_color: QColor | None
+
+        self.parent: Shape | None = None
+        self.children: list[Shape] = []
 
     @property
     @abstractmethod
@@ -28,11 +33,21 @@ class Shape(ABC):
         return self.top + self.height
 
     @abstractmethod
-    def draw(self): ...
+    def render(self): ...
+
+    @abstractmethod
+    def draw(self):
+        for shape in self.children:
+            shape.draw()
 
     @abstractmethod
     def get_bounding_rect(self):
         return [self.left, self.top, self.right, self.bottom]
+
+
+class Page(Shape):
+    def __init__(self):
+        super().__init__()
 
 
 class Rectangle(Shape):
@@ -43,3 +58,11 @@ class Rectangle(Shape):
 class Connector(Shape):
     def __init__(self):
         super().__init__()
+
+        self.head: Shape | None = None
+        self.head_anchor: list[int] = []
+        self.head_margin: int = 0
+
+        self.tail: Shape | None = None
+        self.tail_anchor: list[int] = []
+        self.tail_margin: int = 0
