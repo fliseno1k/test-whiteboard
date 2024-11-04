@@ -25,6 +25,15 @@ class AbstractHandler(ABC):
         self._on_deactivate(editor)
 
     @abstractmethod
+    def initialize(self, editor: Editor, event: QMouseEvent): ...
+
+    @abstractmethod
+    def update(self, editor: Editor, event: QMouseEvent): ...
+
+    @abstractmethod
+    def finalize(self, editor: Editor, event: QMouseEvent): ...
+
+    @abstractmethod
     def on_event(self, editor: Editor, event: QMouseEvent | QKeyEvent): ...
 
     @abstractmethod
