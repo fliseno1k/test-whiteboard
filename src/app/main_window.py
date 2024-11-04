@@ -9,6 +9,7 @@ class MainWindow(QMainWindow):
         self.editor_view = EditorView()
 
         self.setCentralWidget(self.editor_view)
+        self.__update_meta()
 
-    def update_meta(self):
+    def __update_meta(self):
         self.setWindowTitle("Whiteboard")
