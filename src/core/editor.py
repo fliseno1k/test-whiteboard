@@ -49,6 +49,10 @@ class Editor:
     def transform(self):
         return self.__transform
 
+    @property
+    def current_page(self):
+        return self.__store.root
+
     def activate_handler(self, handler_id: str):
         handler = self.__handlers.get(handler_id)
 

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 def add_shape(tx: Transaction, shape: Shape, parent: Shape):
-    return tx.append_shape(shape) or change_parent(shape, parent)
+    return tx.append_shape(shape) or change_parent(tx, shape, parent)
 
 
 def change_parent(tx: Transaction, shape: Shape, parent: Shape):

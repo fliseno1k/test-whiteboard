@@ -11,7 +11,7 @@ class Store:
 
     @property
     def root(self):
-        self.__root
+        return self.__root
 
     def get_by_id(self, id: str):
         return self.__idIndex.get(id)

@@ -18,8 +18,8 @@ class ShapeFactory:
     def create_rectangle(self, center: list[int]):
         shape = Rectangle()
 
-        shape.left = center[0] - 50
-        shape.top = center[1] - 25
+        shape.left = round(center[0]) - 50
+        shape.top = round(center[1]) - 25
         shape.width = 100
         shape.height = 50
 

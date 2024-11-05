@@ -1,10 +1,11 @@
 from __future__ import annotations
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, Callable, cast, List, Optional
+
+from core.transaction import Transaction
 
 if TYPE_CHECKING:
     from core.store import Store
-    from core.transaction import Transaction
 
 
 class ActionKind(Enum):
@@ -18,7 +19,7 @@ class ActionKind(Enum):
 class Action:
     def __init__(self, name: str):
         self.__name = name
-        self.__transactions: list[Transaction] = []
+        self.__transactions: List[Transaction] = []
 
     @property
     def name(self):
@@ -42,7 +43,7 @@ class Action:
 class Transform:
     def __init__(self, store: Store):
         self.__store = store
-        self.__action: Action | None = None
+        self.__action: Optional[Action] = None
 
     def transact(self, fn: Callable[[Transaction], None]):
         transaction = Transaction(self.__store)
