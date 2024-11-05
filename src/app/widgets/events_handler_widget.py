@@ -28,9 +28,7 @@ class EventsHandlerWidget(QWidget):
         active_handler = self.__editor.active_handler
 
         if active_handler:
-            active_handler.on_event(event)
-
-        return super().mouseDoubleClickEvent(event)
+            active_handler.on_mouse_double_click_event(self.__editor, event)
 
     def __set_attributes(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)

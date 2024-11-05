@@ -1,34 +1,25 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
-from dataclasses import dataclass
+from typing import TYPE_CHECKING, Optional, List
+from dataclasses import dataclass, field
 
 if TYPE_CHECKING:
     from core.handlers.abstract_handler import AbstractHandler
 
 
-class BaseOptions:
+@dataclass
+class Options:
     grid_size: int = 20
 
     grid_visible: bool = True
 
-    default_handler_id: str = None
+    default_handler_id: Optional[str] = None
 
-    handlers: list[AbstractHandler] = []
-
-
-@dataclass(frozen=True)
-class ImmutableOptions(BaseOptions):
-    pass
-
-
-@dataclass(frozen=False)
-class MutableOptions(BaseOptions):
-    pass
+    handlers: List[AbstractHandler] = field(default_factory=list)
 
 
 class OptionsBuilder:
     def __init__(self):
-        self.__options = MutableOptions()
+        self.__options = Options()
 
     def set_default_handler_id(self, id: str):
         self.__options.default_handler_id = id
@@ -39,4 +30,7 @@ class OptionsBuilder:
         return self
 
     def build(self):
-        return ImmutableOptions(*vars(self.__options))
+        return Options(
+            default_handler_id=self.__options.default_handler_id,
+            handlers=self.__options.handlers,
+        )

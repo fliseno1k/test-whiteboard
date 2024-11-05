@@ -15,8 +15,14 @@ class ShapeFactory:
     def __init__(self, editor: Editor):
         self.__random_color = random_color_factory(QColor)
 
-    def create_rectangle(self):
+    def create_rectangle(self, center: list[int]):
         shape = Rectangle()
+
+        shape.left = center[0] - 50
+        shape.top = center[1] - 25
+        shape.width = 100
+        shape.height = 50
+
         shape.background_color = self.__random_color()
 
         return shape

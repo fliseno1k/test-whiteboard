@@ -6,6 +6,8 @@ from app.widgets.toolbar_widget import ToolBarWidget
 
 from core.editor import Editor
 from core.options import OptionsBuilder
+from core.handlers.reactangle_handler import RectangleHandler
+from core.handlers.connector_handler import ConnectorHandler
 
 
 class EditorView(QWidget):
@@ -16,7 +18,16 @@ class EditorView(QWidget):
         self.__init_UI()
 
     def __init_editor(self):
-        self.__editor = Editor(OptionsBuilder().build())
+        options = OptionsBuilder()
+        options.set_handlers(
+            [
+                RectangleHandler("rectangle-handler"),
+                ConnectorHandler("connector-handler"),
+            ]
+        )
+        options.set_default_handler_id("rectangle-handler")
+
+        self.__editor = Editor(options.build())
 
     def __init_UI(self):
         layout = QVBoxLayout()

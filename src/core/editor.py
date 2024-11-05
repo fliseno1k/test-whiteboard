@@ -1,8 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from event_emitter import EventEmitter
 
 from core.factory import ShapeFactory
+from core.transform import Transform
+from core.store import Store
 
 if TYPE_CHECKING:
     from core.options import BaseOptions
@@ -15,9 +17,13 @@ class Editor:
 
         self.__handlers: dict[str, AbstractHandler] = {}
 
-        self.__active_handler: AbstractHandler | None = None
+        self.__active_handler: Optional[AbstractHandler] = None
 
         self.__shape_factory = ShapeFactory(self)
+
+        self.__store = Store()
+
+        self.__transform = Transform(self.__store)
 
         self.on_active_handler_change = EventEmitter()
 
@@ -33,11 +39,15 @@ class Editor:
 
     @property
     def handlers(self):
-        return self.__handlers.items()
+        return self.__handlers.values()
 
     @property
     def factory(self):
         return self.__shape_factory
+
+    @property
+    def transform(self):
+        return self.__transform
 
     def activate_handler(self, handler_id: str):
         handler = self.__handlers.get(handler_id)
@@ -53,3 +63,7 @@ class Editor:
     def __initialize_handlers(self):
         for handler in self.__options.handlers:
             self.__handlers[handler.id] = handler
+
+        default_handler = self.__options.default_handler_id
+        if default_handler and default_handler in self.__handlers:
+            self.__active_handler = self.__handlers.get(default_handler)

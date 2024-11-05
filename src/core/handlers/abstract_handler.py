@@ -1,11 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from abc import ABC, abstractmethod
-
-from PySide6.QtGui import QMouseEvent, QKeyEvent
+from abc import ABC
 
 if TYPE_CHECKING:
     from core.editor import Editor
+    from PySide6.QtGui import QMouseEvent
 
 
 class AbstractHandler(ABC):
@@ -16,28 +15,38 @@ class AbstractHandler(ABC):
     def id(self):
         return self._id
 
-    @abstractmethod
     def activate(self, editor: Editor):
         self._on_activate(editor)
 
-    @abstractmethod
     def deactivate(self, editor: Editor):
         self._on_deactivate(editor)
 
-    @abstractmethod
-    def initialize(self, editor: Editor, event: QMouseEvent): ...
+    def initialize(self, editor: Editor, event: QMouseEvent):
+        pass
 
-    @abstractmethod
-    def update(self, editor: Editor, event: QMouseEvent): ...
+    def update(self, editor: Editor, event: QMouseEvent):
+        pass
 
-    @abstractmethod
-    def finalize(self, editor: Editor, event: QMouseEvent): ...
+    def finalize(self, editor: Editor, event: QMouseEvent):
+        pass
 
-    @abstractmethod
-    def on_event(self, editor: Editor, event: QMouseEvent | QKeyEvent): ...
+    def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
+        pass
 
-    @abstractmethod
-    def _on_activate(self, editor: Editor): ...
+    def on_mouse_move_event(self, editor: Editor, event: QMouseEvent):
+        pass
 
-    @abstractmethod
-    def _on_deactivate(self, editor: Editor): ...
+    def on_mouse_release_event(self, editor: Editor, event: QMouseEvent):
+        pass
+
+    def on_mouse_double_click_event(self, editor: Editor, event: QMouseEvent):
+        pass
+
+    def _on_activate(self, editor: Editor):
+        pass
+
+    def _on_deactivate(self, editor: Editor):
+        pass
+
+    def _reset(self):
+        pass

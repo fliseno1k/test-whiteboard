@@ -14,8 +14,6 @@ class ToolBarWidget(QToolBar):
 
         self.__editor = editor
 
-        action1 = QAction("Action 1", self)
-        self.addAction(action1)
-
-        action2 = QAction("Action 2", self)
-        self.addAction(action2)
+        for handler in editor.handlers:
+            action = QAction(handler.id, self)
+            self.addAction(action)
