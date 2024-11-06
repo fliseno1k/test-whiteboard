@@ -4,12 +4,12 @@ from typing import Callable, Optional
 from PySide6.QtGui import QColor, QPainter, QPixmap, QBrush
 from PySide6.QtCore import Qt, QPoint
 
-from utils.unique_id import generate_id
+from utils.unique_id import unique_id
 
 
 class Shape:
     def __init__(self):
-        self.id = generate_id()
+        self.__id = unique_id()
 
         self.left: int = 0
         self.top: int = 0
@@ -21,7 +21,19 @@ class Shape:
         self.parent: Optional[Shape] = None
         self.children: list[Shape] = []
 
-        self.pixmap: Optional[QPixmap] = None
+        self._pixmap: Optional[QPixmap] = None
+
+    @property
+    def id(self):
+        self.__id
+
+    @property
+    def right(self):
+        return self.left + self.width
+
+    @property
+    def bottom(self):
+        return self.top + self.height
 
     def traverse(
         self,
@@ -33,18 +45,10 @@ class Shape:
         for child in self.children:
             child.traverse(fn, self)
 
-    @property
-    def right(self):
-        return self.left + self.width
-
-    @property
-    def bottom(self):
-        return self.top + self.height
-
     def update(self):
-        del self.pixmap
-        self.pixmap = QPixmap(self.width, self.height)
-        self.render(self.pixmap)
+        del self._pixmap
+        self._pixmap = QPixmap(self.width, self.height)
+        self.render(self._pixmap)
 
         for child in self.children:
             child.update()
@@ -57,10 +61,10 @@ class Shape:
         painter.end()
 
     def draw(self, painter: QPainter):
-        if not self.pixmap:
+        if not self._pixmap:
             return
 
-        painter.drawPixmap(QPoint(self.left, self.top), self.pixmap)
+        painter.drawPixmap(QPoint(self.left, self.top), self._pixmap)
 
         for shape in self.children:
             shape.draw(painter)

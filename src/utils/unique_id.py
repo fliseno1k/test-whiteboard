@@ -1,14 +1,14 @@
 def __unique_id_factory(start: int = 0, prefix: str = ""):
     count = start
 
-    def gen():
+    def create_unique_id():
         nonlocal count, prefix
 
         count += 1
 
         return prefix + "-" + str(count)
 
-    return gen
+    return create_unique_id
 
 
-generate_id = __unique_id_factory(0, "symbol")
+unique_id = __unique_id_factory(0, "symbol")
