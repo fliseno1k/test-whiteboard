@@ -24,11 +24,29 @@ class EventsHandlerWidget(QWidget):
 
         self.setGeometry(parent.rect())
 
+    def mousePressEvent(self, event):
+        active_handler = self.__editor.active_handler
+
+        if active_handler:
+            active_handler.on_mouse_press_event(self.__editor, event)
+
     def mouseDoubleClickEvent(self, event):
         active_handler = self.__editor.active_handler
 
         if active_handler:
             active_handler.on_mouse_double_click_event(self.__editor, event)
+
+    def mouseMoveEvent(self, event):
+        active_handler = self.__editor.active_handler
+
+        if active_handler:
+            active_handler.on_mouse_move_event(self.__editor, event)
+
+    def mouseReleaseEvent(self, event):
+        active_handler = self.__editor.active_handler
+
+        if active_handler:
+            active_handler.on_mouse_release_event(self.__editor, event)
 
     def __set_attributes(self):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)

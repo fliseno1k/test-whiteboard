@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import Callable, Optional
+
+from PySide6.QtGui import QColor, QPainter, QPixmap, QBrush
+from PySide6.QtCore import Qt, QPoint
 
 from utils.unique_id import generate_id
-
-if TYPE_CHECKING:
-    from PySide6.QtGui import QColor
 
 
 class Shape:
@@ -20,6 +20,8 @@ class Shape:
 
         self.parent: Optional[Shape] = None
         self.children: list[Shape] = []
+
+        self.pixmap: Optional[QPixmap] = None
 
     def traverse(
         self,
@@ -40,22 +42,41 @@ class Shape:
         return self.top + self.height
 
     def update(self):
-        pass
+        del self.pixmap
+        self.pixmap = QPixmap(self.width, self.height)
+        self.render(self.pixmap)
 
-    def render(self):
-        pass
+        for child in self.children:
+            child.update()
 
-    def draw(self):
+    def render(self, pixmap: QPixmap):
+        painter = QPainter(pixmap)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QBrush(self.background_color))
+        painter.drawRect(0, 0, self.width, self.height)
+        painter.end()
+
+    def draw(self, painter: QPainter):
+        if not self.pixmap:
+            return
+
+        painter.drawPixmap(QPoint(self.left, self.top), self.pixmap)
+
         for shape in self.children:
-            shape.draw()
-
-    def get_bounding_rect(self):
-        return [self.left, self.top, self.right, self.bottom]
+            shape.draw(painter)
 
 
 class Page(Shape):
     def __init__(self):
         super().__init__()
+
+    def update(self):
+        for child in self.children:
+            child.update()
+
+    def draw(self, painter: QPainter):
+        for shape in self.children:
+            shape.draw(painter)
 
 
 class Rectangle(Shape):

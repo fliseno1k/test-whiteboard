@@ -1,12 +1,27 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QPen, QColor
 from PySide6.QtCore import Qt
 
+from core.events import EventKind
+
+if TYPE_CHECKING:
+    from core.editor import Editor
+
 
 class CanvasWidget(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, editor: Editor, parent=None):
         super().__init__(parent)
+
+        self.__editor = editor
+        self.__editor.add_listener(EventKind.UPDATE, self.update)
+
+        self.destroyed.connect(
+            lambda: self.__editor.remove_listener(EventKind.UPDATE, self.update)
+        )
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -16,6 +31,7 @@ class CanvasWidget(QWidget):
         painter.fillRect(self.rect(), Qt.white)
 
         self.__draw_grid(painter)
+        self.__editor.draw(painter)
 
         painter.end()
 
