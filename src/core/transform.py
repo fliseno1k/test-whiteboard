@@ -3,6 +3,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Callable, cast, List, Optional
 
 from core.transaction import Transaction
+from core.events import EventEmitter
 
 if TYPE_CHECKING:
     from core.store import Store
@@ -45,12 +46,17 @@ class Transform:
         self.__store = store
         self.__action: Optional[Action] = None
 
+        self.on_action = EventEmitter()
+        self.on_transaction = EventEmitter()
+
     def transact(self, fn: Callable[[Transaction], None]):
         transaction = Transaction(self.__store)
         fn(transaction)
 
         if not transaction.length:
             return
+
+        self.on_transaction.emit()
 
         if self.__action:
             self.__action.push(transaction)
@@ -66,6 +72,12 @@ class Transform:
         self.__action = Action(name)
 
     def end_action(self):
+        if not self.__action:
+            return
+
+        if self.__action.length:
+            self.on_action.emit()
+
         self.__action = None
 
     def cancel_action(self):

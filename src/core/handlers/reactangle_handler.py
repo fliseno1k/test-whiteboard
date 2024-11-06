@@ -23,7 +23,7 @@ class RectangleHandler(AbstractHandler):
             return
 
         center = event.position()
-        self.__shape = editor.factory.create_rectangle([center.x(), center.y()])
+        self.__shape = editor.shape_factory.create_rectangle([center.x(), center.y()])
 
         editor.transform.start_action(ActionKind.INSERT)
         editor.transform.transact(

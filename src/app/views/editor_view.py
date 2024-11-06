@@ -37,7 +37,7 @@ class EditorView(QWidget):
         toolbar = ToolBarWidget(self.__editor, self)
         layout.addWidget(toolbar)
 
-        canvas = CanvasWidget(self)
+        canvas = CanvasWidget(self.__editor, self)
         layout.addWidget(canvas)
 
         events_handler_widget = EventsHandlerWidget(self.__editor, canvas)
