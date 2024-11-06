@@ -1,10 +1,11 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 from abc import ABC
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from core.editor import Editor
     from PySide6.QtGui import QMouseEvent
+
+    from ..editor import Editor
 
 
 class AbstractHandler(ABC):

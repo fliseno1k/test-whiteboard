@@ -1,15 +1,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from core.handlers.abstract_handler import AbstractHandler
-from core.macro import add_shape
-from core.transform import ActionKind
+from ..macro import add_shape
+from ..transform import ActionKind
+from .abstract_handler import AbstractHandler
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QMouseEvent
 
-    from core.editor import Editor
-    from core.shapes import Shape
+    from ..editor import Editor
+    from ..shapes import Shape
 
 
 class RectangleHandler(AbstractHandler):

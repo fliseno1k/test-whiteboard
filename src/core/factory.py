@@ -1,11 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from core.shapes import Rectangle, Connector
 from utils.rand_color import random_color
 
+from .shapes import Connector, Rectangle
+
 if TYPE_CHECKING:
-    from core.editor import Editor
+    from .editor import Editor
 
 
 class ShapeFactory:

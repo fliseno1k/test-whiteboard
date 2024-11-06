@@ -1,11 +1,11 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import TYPE_CHECKING
-from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
-    from core.store import Store
-    from core.shapes import Shape
+    from .shapes import Shape
+    from .store import Store
 
 
 class MutationType(Enum):

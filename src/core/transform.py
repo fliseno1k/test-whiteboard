@@ -2,11 +2,11 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, cast, List, Optional
 
-from core.transaction import Transaction
-from core.events import EventEmitter
+from .events import EventEmitter
+from .transaction import Transaction
 
 if TYPE_CHECKING:
-    from core.store import Store
+    from .store import Store
 
 
 class ActionKind(Enum):

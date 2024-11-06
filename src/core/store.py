@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Dict
 
-from core.shapes import Shape, Page
+from .shapes import Shape, Page
 
 
 class Store:

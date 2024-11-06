@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from core.transaction import Transaction
-    from core.shapes import Shape
+    from .shapes import Shape
+    from .transaction import Transaction
 
 
 def add_shape(tx: Transaction, shape: Shape, parent: Shape):

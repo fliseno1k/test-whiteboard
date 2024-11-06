@@ -1,9 +1,9 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, List
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
-    from core.handlers.abstract_handler import AbstractHandler
+    from .handlers.abstract_handler import AbstractHandler
 
 
 @dataclass

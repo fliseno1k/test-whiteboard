@@ -1,8 +1,7 @@
 from __future__ import annotations
-from typing import Callable, Optional
-
 from PySide6.QtGui import QColor, QPainter, QPixmap, QBrush
 from PySide6.QtCore import Qt, QPoint
+from typing import Callable, Optional
 
 from utils.unique_id import unique_id
 

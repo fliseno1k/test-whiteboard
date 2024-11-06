@@ -1,16 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Dict, Callable
 
-from core.factory import ShapeFactory
-from core.transform import Transform
-from core.store import Store
-from core.events import EventEmitter, EventKind
+from .events import EventEmitter, EventKind
+from .factory import ShapeFactory
+from .store import Store
+from .transform import Transform
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QPainter
 
-    from core.options import BaseOptions
-    from handlers.abstract_handler import AbstractHandler
+    from .handlers.abstract_handler import AbstractHandler
+    from .options import BaseOptions
 
 
 class Editor:

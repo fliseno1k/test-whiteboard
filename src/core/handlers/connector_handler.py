@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from core.handlers.abstract_handler import AbstractHandler
+from .abstract_handler import AbstractHandler
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QMouseEvent
 
-    from core.editor import Editor
+    from ..editor import Editor
 
 
 class ConnectorHandler(AbstractHandler):
