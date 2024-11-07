@@ -122,7 +122,7 @@ class Transaction:
             mutation.unapply(self.__store)
 
     def append_shape(self, shape: Shape):
-        if not self.__store.get_by_id(shape.id):
+        if not self.__store.get_by_id(shape.id()):
             return False
 
         mutation = CreateMutation(shape)

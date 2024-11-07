@@ -39,7 +39,7 @@ class ToolBarWidget(QToolBar):
 
     def __update_actions(self):
         for id, action in self.__actions.items():
-            action.setChecked(self.__editor.active_handler.id == id)
+            action.setChecked(self.__editor.active_handler.id() == id)
 
     def __set_stylesheet(self):
         self.setStyleSheet(

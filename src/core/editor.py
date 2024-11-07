@@ -98,7 +98,7 @@ class Editor:
         handler_id = self.__options.default_handler_id
 
         for handler in self.__options.handlers:
-            self.__handlers.update({handler.id: handler})
+            self.__handlers.update({handler.id(): handler})
 
         if handler_id and (handler_id in self.__handlers.keys()):
             self.__active_handler = self.__handlers.get(handler_id)

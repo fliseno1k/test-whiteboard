@@ -17,14 +17,14 @@ class Store:
 
     def add_to_index(self, shape: Shape):
         def helper(shape: Shape):
-            self.__idIndex[shape.id] = shape
+            self.__idIndex[shape.id()] = shape
             shape.update()
 
         shape.traverse(helper)
 
     def remove_from_index(self, shape: Shape):
         def helper(shape: Shape):
-            del self.__idIndex[shape.id]
+            del self.__idIndex[shape.id()]
             shape.update()
 
         shape.traverse(helper)

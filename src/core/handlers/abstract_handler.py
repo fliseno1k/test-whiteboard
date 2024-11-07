@@ -14,7 +14,6 @@ class AbstractHandler(ABC):
 
         self._reset()
 
-    @property
     def id(self):
         return self._id
 
