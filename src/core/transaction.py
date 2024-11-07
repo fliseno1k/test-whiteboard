@@ -20,7 +20,6 @@ class Mutation(ABC):
     def __init__(self, type: MutationType):
         self.__type: type
 
-    @property
     def type(self):
         return self.__type
 
@@ -108,8 +107,7 @@ class Transaction:
         self.__store = store
         self.__mutations: list[Mutation] = []
 
-    @property
-    def length(self):
+    def size(self):
         return len(self.__mutations)
 
     def push(self, mutation: Mutation):
@@ -124,7 +122,7 @@ class Transaction:
             mutation.unapply(self.__store)
 
     def append_shape(self, shape: Shape):
-        if self.__store.get_by_id(shape.id) is None:
+        if not self.__store.get_by_id(shape.id):
             return False
 
         mutation = CreateMutation(shape)

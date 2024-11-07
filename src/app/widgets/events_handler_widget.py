@@ -30,8 +30,7 @@ class EventsHandlerWidget(QWidget):
 
     def resizeEvent(self, event):
         parent = self.parentWidget()
-
-        if parent is None:
+        if not parent:
             return
 
         self.setGeometry(parent.rect())

@@ -36,6 +36,10 @@ class Shape:
     def bottom(self):
         return self.top + self.height
 
+    @property
+    def outline(self):
+        return self._memo_outline
+
     def traverse(
         self,
         fn: Callable[[Shape], None],
@@ -57,9 +61,6 @@ class Shape:
             return self
 
         return None
-
-    def contains_point(self, point: QPoint):
-        return False
 
     def update(self):
         del self._pixmap
@@ -86,6 +87,9 @@ class Shape:
 
         for shape in self.children:
             shape.draw(painter)
+    
+    def contains_point(self, point: QPoint):
+        return False
 
 
 class Page(Shape):
@@ -105,12 +109,6 @@ class Box(Shape):
     def __init__(self):
         super().__init__()
 
-    def contains_point(self, point: QPoint):
-        x = point.x()
-        y = point.y()
-
-        return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
-
     def render_default(self, pixmap: QPixmap):
         painter = QPainter(pixmap)
         painter.setPen(Qt.PenStyle.NoPen)
@@ -126,6 +124,12 @@ class Box(Shape):
             [self.left, self.bottom],
             [self.left, self.top],
         ]
+
+    def contains_point(self, point: QPoint):
+        x = point.x()
+        y = point.y()
+
+        return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
 
 
 class Rectangle(Box):

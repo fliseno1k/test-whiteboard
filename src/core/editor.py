@@ -1,13 +1,15 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Dict, Callable
 
-from .events import EventEmitter, EventKind, setup_events
+from .events import EventKind, setup_events
 from .factory import ShapeFactory
 from .store import Store
 from .transform import Transform
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QPainter, QMouseEvent
+
+    from utils.event_emmiter import EventEmitter
 
     from .handlers.abstract_handler import AbstractHandler
     from .options import BaseOptions
@@ -29,17 +31,14 @@ class Editor:
         self.__initialize_events()
         self.__initialize_handlers()
 
-    @property
     def active_handler(self):
         return self.__active_handler
 
-    @property
     def handlers(self):
         return self.__handlers.items()
 
-    @property
     def current_page(self):
-        return self.store.root
+        return self.store.root()
 
     def add_listener(self, event: EventKind, fn: Callable):
         self.__events[event].add_listener(fn)
@@ -48,46 +47,43 @@ class Editor:
         self.__events[event].remove_listener(fn)
 
     def draw(self, painter: QPainter):
-        self.store.root.draw(painter)
+        self.store.root().draw(painter)
 
     def updated(self):
         self.__events[EventKind.UPDATED].emit()
 
     def activate_handler(self, handler_id: str):
+        self.__active_handler = None
+
         handler = self.__handlers.get(handler_id)
-
-        if self.__active_handler:
-            self.__active_handler.deactivate(self)
-
         if handler:
             self.__active_handler = handler
-            self.__active_handler.activate(self)
 
         self.__events[EventKind.ACTIVE_HANDLER_CHANGED].emit()
 
     def on_mouse_press_event(self, event: QMouseEvent):
-        if not self.active_handler:
+        if not self._active_handler:
             return
 
-        self.active_handler.on_mouse_press_event(self, event)
+        self._active_handler.on_mouse_press_event(self, event)
 
     def on_mouse_move_event(self, event: QMouseEvent):
-        if not self.active_handler:
+        if not self._active_handler:
             return
 
-        self.active_handler.on_mouse_move_event(self, event)
+        self._active_handler.on_mouse_move_event(self, event)
 
     def on_mouse_release_event(self, event: QMouseEvent):
-        if not self.active_handler:
+        if not self._active_handler:
             return
 
-        self.active_handler.on_mouse_release_event(self, event)
+        self._active_handler.on_mouse_release_event(self, event)
 
     def on_mouse_double_click_event(self, event: QMouseEvent):
-        if not self.active_handler:
+        if not self._active_handler:
             return
 
-        self.active_handler.on_mouse_double_click_event(self, event)
+        self._active_handler.on_mouse_double_click_event(self, event)
 
     def __initialize_state(self):
         self.transform.on_action.add_listener(self.updated)

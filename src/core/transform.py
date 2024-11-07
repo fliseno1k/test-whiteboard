@@ -1,8 +1,9 @@
 from __future__ import annotations
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, cast, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional, cast
 
-from .events import EventEmitter
+from utils.event_emmiter import EventEmitter
+
 from .transaction import Transaction
 
 if TYPE_CHECKING:
@@ -22,12 +23,10 @@ class Action:
         self.__name = name
         self.__transactions: List[Transaction] = []
 
-    @property
     def name(self):
         return self.__name
 
-    @property
-    def length(self):
+    def size(self):
         return len(self.__transactions)
 
     def push(self, tx: Transaction):
@@ -53,7 +52,7 @@ class Transform:
         transaction = Transaction(self.__store)
         fn(transaction)
 
-        if not transaction.length:
+        if transaction.size() == 0:
             return
 
         self.on_transaction.emit()
@@ -66,7 +65,7 @@ class Transform:
             self.endAction()
 
     def start_action(self, name: str):
-        if self.__action is not None and self.__action.length > 0:
+        if self.__action is not None and self.__action.size() > 0:
             self.endAction()
 
         self.__action = Action(name)
@@ -75,13 +74,13 @@ class Transform:
         if not self.__action:
             return
 
-        if self.__action.length:
+        if self.__action.size():
             self.on_action.emit()
 
         self.__action = None
 
     def cancel_action(self):
-        if self.__action is None:
+        if not self.__action:
             return
 
         self.__action.unapply()

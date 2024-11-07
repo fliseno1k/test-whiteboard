@@ -26,7 +26,7 @@ class ToolBarWidget(QToolBar):
         )
 
     def __init_actions(self):
-        for id, _ in self.__editor.handlers:
+        for id, _ in self.__editor.handlers():
             action = QAction(id, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _, id=id: self.__select_handler(id))

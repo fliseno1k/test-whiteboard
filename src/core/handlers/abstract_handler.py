@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QMouseEvent
@@ -12,15 +12,11 @@ class AbstractHandler(ABC):
     def __init__(self, id: str):
         self._id = id
 
+        self._reset()
+
     @property
     def id(self):
         return self._id
-
-    def activate(self, editor: Editor):
-        self._on_activate(editor)
-
-    def deactivate(self, editor: Editor):
-        self._on_deactivate(editor)
 
     def initialize(self, editor: Editor, event: QMouseEvent):
         pass
@@ -32,22 +28,36 @@ class AbstractHandler(ABC):
         pass
 
     def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
-        pass
+        self._reset()
+
+        self._dragging = True
+        self._drag_point = event.position()
+        self._drag_start_point = event.position()
+
+        self.initialize(editor, event)
+        editor.updated()
 
     def on_mouse_move_event(self, editor: Editor, event: QMouseEvent):
-        pass
+        if not self._dragging:
+            return
+
+        self._drag_point = event.position()
+
+        self.update()
+        editor.updated()
 
     def on_mouse_release_event(self, editor: Editor, event: QMouseEvent):
-        pass
+        if not self._dragging:
+            return
+
+        self.finalize(editor, event)
+        self._reset()
+        editor.updated()
 
     def on_mouse_double_click_event(self, editor: Editor, event: QMouseEvent):
         pass
 
-    def _on_activate(self, editor: Editor):
-        pass
-
-    def _on_deactivate(self, editor: Editor):
-        pass
-
     def _reset(self):
-        pass
+        self._dragging = False
+        self._drag_point: List[int] = [-1, -1]
+        self._drag_start_point: List[int] = [-1, -1]
