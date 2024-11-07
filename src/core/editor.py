@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, Dict, Callable
 
 from .events import EventKind, setup_events
 from .factory import ShapeFactory
+from .selection import Selection
 from .store import Store
 from .transform import Transform
 
@@ -24,6 +25,7 @@ class Editor:
         self.__active_handler: Optional[AbstractHandler] = None
 
         self.store = Store()
+        self.selection = Selection(self)
         self.transform = Transform(self.store)
         self.shape_factory = ShapeFactory(self)
 
