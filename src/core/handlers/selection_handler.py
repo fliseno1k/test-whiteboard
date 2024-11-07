@@ -17,21 +17,15 @@ class SelectionHandler(AbstractHandler):
     def __init__(self, id: str):
         super().__init__(id)
 
-        self._selected: List[Shape] = []
+        self._deselect_on_up: List[Shape] = []
 
-    def initialize(self, editor: Editor, event: QMouseEvent):
-        shape = self._get_shape_at(editor, event)
-        if not shape:
-            return
-
-        self._selected.append(shape)
-
-        editor.updated()
-
-    def update(self, editor: Editor, event: QMouseEvent):
+    def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
         pass
 
-    def finalize(self, editor: Editor, event: QMouseEvent):
+    def on_mouse_move_event(self, editor: Editor, event: QMouseEvent):
+        pass
+
+    def on_mouse_release_event(self, editor: Editor, event: QMouseEvent):
         pass
 
     def _get_shape_at(self, editor: Editor, event: QMouseEvent):

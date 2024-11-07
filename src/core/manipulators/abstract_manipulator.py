@@ -1,5 +1,4 @@
 from __future__ import annotations
-from abc import ABC
 from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:
@@ -10,7 +9,7 @@ if TYPE_CHECKING:
     from ..shapes import Shape
 
 
-class AbstractManipulator(ABC):
+class AbstractManipulator():
 
     def __init__(self):
         self._controllers: List[AbstractController] = []
