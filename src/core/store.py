@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Dict
 
-from .shapes import Shape, Page
+from .shapes import Page, Shape
 
 
 class Store:
@@ -9,7 +9,6 @@ class Store:
         self.__idIndex: Dict[str, Shape] = {}
         self.__root: Optional[Page] = Page()
 
-    @property
     def root(self):
         return self.__root
 
@@ -18,14 +17,14 @@ class Store:
 
     def add_to_index(self, shape: Shape):
         def helper(shape: Shape):
-            self.__idIndex[shape.id] = shape
+            self.__idIndex[shape.id()] = shape
             shape.update()
 
         shape.traverse(helper)
 
     def remove_from_index(self, shape: Shape):
         def helper(shape: Shape):
-            del self.__idIndex[shape.id]
+            del self.__idIndex[shape.id()]
             shape.update()
 
         shape.traverse(helper)

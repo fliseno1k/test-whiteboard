@@ -26,7 +26,7 @@ class ToolBarWidget(QToolBar):
         )
 
     def __init_actions(self):
-        for id, _ in self.__editor.handlers:
+        for id, _ in self.__editor.handlers():
             action = QAction(id, self)
             action.setCheckable(True)
             action.triggered.connect(lambda _, id=id: self.__select_handler(id))
@@ -39,7 +39,7 @@ class ToolBarWidget(QToolBar):
 
     def __update_actions(self):
         for id, action in self.__actions.items():
-            action.setChecked(self.__editor.active_handler.id == id)
+            action.setChecked(self.__editor.active_handler.id() == id)
 
     def __set_stylesheet(self):
         self.setStyleSheet(

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from enum import Enum
 from typing import Callable, Optional, List
 
 from PySide6.QtGui import QColor, QPainter, QPixmap, QBrush
@@ -7,9 +8,16 @@ from PySide6.QtCore import Qt, QPoint
 from utils.unique_id import unique_id
 
 
+class ShapeKind(Enum):
+    BOX = 'box',
+    CONNECTOR = 'connector',
+    PAGE = 'page',
+    RECTANGLE = 'rectangle',
+
 class Shape:
-    def __init__(self):
-        self.__id = unique_id()
+    def __init__(self, type: ShapeKind):
+        self._id = unique_id()
+        self._type = type
 
         self.left: int = 0
         self.top: int = 0
@@ -25,16 +33,22 @@ class Shape:
         self._memo_outline: List[List[int]] = []
 
     @property
-    def id(self):
-        self.__id
-
-    @property
     def right(self):
         return self.left + self.width
 
     @property
     def bottom(self):
         return self.top + self.height
+
+    @property
+    def outline(self):
+        return self._memo_outline
+
+    def id(self):
+        self._id
+
+    def type(self):
+        self._type
 
     def traverse(
         self,
@@ -57,9 +71,6 @@ class Shape:
             return self
 
         return None
-
-    def contains_point(self, point: QPoint):
-        return False
 
     def update(self):
         del self._pixmap
@@ -86,11 +97,14 @@ class Shape:
 
         for shape in self.children:
             shape.draw(painter)
+    
+    def contains_point(self, point: QPoint):
+        return False
 
 
 class Page(Shape):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, type: ShapeKind = ShapeKind.PAGE):
+        super().__init__(type)
 
     def update(self):
         for child in self.children:
@@ -102,14 +116,8 @@ class Page(Shape):
 
 
 class Box(Shape):
-    def __init__(self):
-        super().__init__()
-
-    def contains_point(self, point: QPoint):
-        x = point.x()
-        y = point.y()
-
-        return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
+    def __init__(self, type: ShapeKind = ShapeKind.BOX):
+        super().__init__(type)
 
     def render_default(self, pixmap: QPixmap):
         painter = QPainter(pixmap)
@@ -127,15 +135,21 @@ class Box(Shape):
             [self.left, self.top],
         ]
 
+    def contains_point(self, point: QPoint):
+        x = point.x()
+        y = point.y()
+
+        return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
+
 
 class Rectangle(Box):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, type: ShapeKind = ShapeKind.RECTANGLE):
+        super().__init__(type)
 
 
 class Connector(Shape):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, type: ShapeKind = ShapeKind.CONNECTOR):
+        super().__init__(type)
 
         self.head: Optional[Shape] = None
         self.head_anchor: list[int] = []
