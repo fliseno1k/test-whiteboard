@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Dict
 
-from .shapes import Shape, Page
+from .shapes import Page, Shape
 
 
 class Store:
@@ -9,7 +9,6 @@ class Store:
         self.__idIndex: Dict[str, Shape] = {}
         self.__root: Optional[Page] = Page()
 
-    @property
     def root(self):
         return self.__root
 
