@@ -1,7 +1,8 @@
 from __future__ import annotations
+from typing import Callable, Optional, List
+
 from PySide6.QtGui import QColor, QPainter, QPixmap, QBrush
 from PySide6.QtCore import Qt, QPoint
-from typing import Callable, Optional
 
 from utils.unique_id import unique_id
 
@@ -21,6 +22,7 @@ class Shape:
         self.children: list[Shape] = []
 
         self._pixmap: Optional[QPixmap] = None
+        self._memo_outline: List[List[int]] = []
 
     @property
     def id(self):
@@ -44,6 +46,21 @@ class Shape:
         for child in self.children:
             child.traverse(fn, self)
 
+    def get_shape_at(self, point: QPoint) -> Optional[Shape]:
+        for shape in self.children:
+            result = shape.get_shape_at(point)
+
+            if result:
+                return result
+
+        if self.contains_point(point):
+            return self
+
+        return None
+
+    def contains_point(self, point: QPoint):
+        return False
+
     def update(self):
         del self._pixmap
         self._pixmap = QPixmap(self.width, self.height)
@@ -53,11 +70,13 @@ class Shape:
             child.update()
 
     def render(self, pixmap: QPixmap):
-        painter = QPainter(pixmap)
-        painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QBrush(self.background_color))
-        painter.drawRect(0, 0, self.width, self.height)
-        painter.end()
+        self.render_outline(pixmap)
+        self.render_default(pixmap)
+
+    def render_default(self, pixmap: QPixmap): ...
+
+    def render_outline(self, pixmap: QPixmap):
+        self._memo_outline = []
 
     def draw(self, painter: QPainter):
         if not self._pixmap:
@@ -82,7 +101,34 @@ class Page(Shape):
             shape.draw(painter)
 
 
-class Rectangle(Shape):
+class Box(Shape):
+    def __init__(self):
+        super().__init__()
+
+    def contains_point(self, point: QPoint):
+        x = point.x()
+        y = point.y()
+
+        return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
+
+    def render_default(self, pixmap: QPixmap):
+        painter = QPainter(pixmap)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QBrush(self.background_color))
+        painter.drawRect(0, 0, self.width, self.height)
+        painter.end()
+
+    def render_outline(self, pixmap: QPixmap):
+        self._memo_outline = [
+            [self.left, self.top],
+            [self.right, self.top],
+            [self.right, self.bottom],
+            [self.left, self.bottom],
+            [self.left, self.top],
+        ]
+
+
+class Rectangle(Box):
     def __init__(self):
         super().__init__()
 

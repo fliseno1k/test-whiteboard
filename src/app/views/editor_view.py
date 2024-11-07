@@ -1,33 +1,23 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 
-from app.widgets.canvas_widget import CanvasWidget
-from app.widgets.events_handler_widget import EventsHandlerWidget
-from app.widgets.toolbar_widget import ToolBarWidget
+from ..widgets.canvas_widget import CanvasWidget
+from ..widgets.events_handler_widget import EventsHandlerWidget
+from ..widgets.toolbar_widget import ToolBarWidget
 
-from core.editor import Editor
-from core.options import OptionsBuilder
-from core.handlers.reactangle_handler import RectangleHandler
-from core.handlers.connector_handler import ConnectorHandler
+if TYPE_CHECKING:
+    from core.editor import Editor
 
 
 class EditorView(QWidget):
-    def __init__(self):
+    def __init__(self, editor: Editor):
         super().__init__()
 
-        self.__init_editor()
+        self.__editor = editor
+
         self.__init_UI()
-
-    def __init_editor(self):
-        options = OptionsBuilder()
-        options.set_handlers(
-            [
-                RectangleHandler("rectangle-handler"),
-                ConnectorHandler("connector-handler"),
-            ]
-        )
-        options.set_default_handler_id("rectangle-handler")
-
-        self.__editor = Editor(options.build())
 
     def __init_UI(self):
         layout = QVBoxLayout()

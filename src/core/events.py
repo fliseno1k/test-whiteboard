@@ -1,9 +1,10 @@
-from typing import Callable, List
+from typing import Callable, List, Dict
 from enum import Enum
 
 
 class EventKind(Enum):
-    UPDATE = "update"
+    UPDATED = "updated"
+    ACTIVE_HANDLER_CHANGED = "active-handler-changed"
 
 
 class EventEmitter:
@@ -22,3 +23,10 @@ class EventEmitter:
 
     def reset(self):
         self._listeners.clear()
+
+
+def setup_events() -> Dict[EventKind, EventEmitter]:
+    return {
+        EventKind.UPDATED: EventEmitter(),
+        EventKind.ACTIVE_HANDLER_CHANGED: EventEmitter(),
+    }

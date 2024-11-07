@@ -17,11 +17,7 @@ class CanvasWidget(QWidget):
         super().__init__(parent)
 
         self.__editor = editor
-        self.__editor.add_listener(EventKind.UPDATE, self.update)
-
-        self.destroyed.connect(
-            lambda: self.__editor.remove_listener(EventKind.UPDATE, self.update)
-        )
+        self.__editor.add_listener(EventKind.UPDATED, self.update)
 
     def paintEvent(self, event):
         painter = QPainter(self)
