@@ -38,11 +38,10 @@ class AbstractManipulator():
 
         return self._dragging_controller.on_mouse_move_event(editor, shape, event)
 
-
     def on_mouse_release_event(self, editor: Editor, shape: Shape, event: QMouseEvent):
         if not self._dragging_controller:
             return False
-        
+
         self._dragging_controller.on_mouse_release_event(editor, shape, event)
         self._dragging_controller = None
 
@@ -51,6 +50,6 @@ class AbstractManipulator():
     def draw(self, editor: Editor, shape: Shape):
         if self._dragging_controller:
             return
-        
+
         for ctrl in self._controllers:
             ctrl.active(editor, shape) and ctrl.draw(editor, shape)
