@@ -1,13 +1,12 @@
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
 from utils.singleton import Singleton
 
-if TYPE_CHECKING:
-    from .abstract_manipulator import AbstractManipulator
+from .abstract_manipulator import AbstractManipulator
 
 
-class _ManipulatorManager(metaclass=Singleton):
-    def __init__():
+class ManipulatorManager(metaclass=Singleton):
+    def __init__(self):
         self._manipulators: Dict[str, AbstractManipulator] = {}
 
     def define(self, type: str, manipulator: AbstractManipulator):
@@ -17,4 +16,4 @@ class _ManipulatorManager(metaclass=Singleton):
         return self._manipulators.get(type)
 
 
-manipulator_manager = _ManipulatorManager()
+manipulator_manager = ManipulatorManager()

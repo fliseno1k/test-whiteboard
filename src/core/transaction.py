@@ -1,7 +1,9 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from copy import copy
 from enum import Enum
 from typing import TYPE_CHECKING
+
 
 if TYPE_CHECKING:
     from .shapes import Shape
@@ -90,16 +92,24 @@ class RemoveChildMutation(Mutation):
 
 
 class AssignMutation(Mutation):
-    def __init__(self, shape: Shape):
+    def __init__(self, shape: Shape, field: str, value: any):
         super().__init__(MutationType.ASSIGN)
 
         self.__shape = shape
+        self.__field = field
+        self.__value = value
+        self.__old_value = shape[field]
 
     def apply(self, store: Store):
-        return super().apply(store)
+        self.__shape[self.__field] = self.__value
+        store.update(self.__shape)
 
     def unapply(self, store: Store):
-        return super().unapply(store)
+        self.__shape[self.__field] = self.__old_value
+        store.update(self.__shape)
+
+    def update_value(self, new_value: any):
+        self.__value = new_value
 
 
 class Transaction:
@@ -147,5 +157,33 @@ class Transaction:
         mutation = RemoveChildMutation(parent, shape)
         mutation.apply(self.__store)
         self.push(mutation)
+
+        return True
+
+    def assign(self, shape: Shape, field: str, value: any):
+        if not hasattr(shape, field):
+            return False
+
+        old_value = getattr(shape, field)
+        if old_value == value:
+            return True
+
+        existing_mutation = next(
+            (
+                mutation
+                for mutation in self.__mutations
+                if isinstance(mutation, AssignMutation)
+            ),
+            None,
+        )
+
+        if existing_mutation:
+            existing_mutation.update_value(copy(value))
+            existing_mutation.apply(self.__store)
+        else:
+            assign_mutation = AssignMutation(shape, field, copy(value))
+            assign_mutation.apply(self.__store)
+
+            self.__mutations.append(assign_mutation)
 
         return True

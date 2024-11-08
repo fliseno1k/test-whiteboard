@@ -12,7 +12,9 @@ class AbstractHandler(ABC):
     def __init__(self, id: str):
         self._id = id
 
-        self._reset()
+        self._dragging = False
+        self._drag_point: List[int] = [-1, -1]
+        self._drag_start_point: List[int] = [-1, -1]
 
     def id(self):
         return self._id
@@ -58,5 +60,5 @@ class AbstractHandler(ABC):
 
     def _reset(self):
         self._dragging = False
-        self._drag_point: List[int] = [-1, -1]
-        self._drag_start_point: List[int] = [-1, -1]
+        self._drag_point = [-1, -1]
+        self._drag_start_point = [-1, -1]

@@ -1,12 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .editor import Editor
     from .shapes import Shape
 
 
-class Selection():
+class Selection:
 
     def __init__(self, editor: Editor):
         self._editor = editor
@@ -21,7 +21,7 @@ class Selection():
     def is_selected(self, shape: Shape):
         return shape in self._shapes
 
-    def select(self, shapes: List[Shape], clear = False):
+    def select(self, shapes: List[Shape], clear=False):
         if clear:
             self._shapes.clear()
 
@@ -33,3 +33,6 @@ class Selection():
         for shape in shapes:
             if shape in self._shapes:
                 self._shapes.remove(shape)
+
+    def deselect_all(self):
+        self._shapes.clear()

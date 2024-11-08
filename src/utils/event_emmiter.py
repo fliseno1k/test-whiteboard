@@ -1,3 +1,6 @@
+from typing import Callable, List
+
+
 class EventEmitter:
     def __init__(self):
         self._listeners: List[Callable[..., None]] = []

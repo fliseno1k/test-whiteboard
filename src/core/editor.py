@@ -64,28 +64,28 @@ class Editor:
         self.__events[EventKind.ACTIVE_HANDLER_CHANGED].emit()
 
     def on_mouse_press_event(self, event: QMouseEvent):
-        if not self._active_handler:
+        if not self.__active_handler:
             return
 
-        self._active_handler.on_mouse_press_event(self, event)
+        self.__active_handler.on_mouse_press_event(self, event)
 
     def on_mouse_move_event(self, event: QMouseEvent):
-        if not self._active_handler:
+        if not self.__active_handler:
             return
 
-        self._active_handler.on_mouse_move_event(self, event)
+        self.__active_handler.on_mouse_move_event(self, event)
 
     def on_mouse_release_event(self, event: QMouseEvent):
-        if not self._active_handler:
+        if not self.__active_handler:
             return
 
-        self._active_handler.on_mouse_release_event(self, event)
+        self.__active_handler.on_mouse_release_event(self, event)
 
     def on_mouse_double_click_event(self, event: QMouseEvent):
-        if not self._active_handler:
+        if not self.__active_handler:
             return
 
-        self._active_handler.on_mouse_double_click_event(self, event)
+        self.__active_handler.on_mouse_double_click_event(self, event)
 
     def __initialize_state(self):
         self.transform.on_action.add_listener(self.updated)

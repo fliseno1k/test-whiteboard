@@ -9,10 +9,11 @@ from utils.unique_id import unique_id
 
 
 class ShapeKind(Enum):
-    BOX = 'box',
-    CONNECTOR = 'connector',
-    PAGE = 'page',
-    RECTANGLE = 'rectangle',
+    BOX = ("box",)
+    CONNECTOR = ("connector",)
+    PAGE = ("page",)
+    RECTANGLE = ("rectangle",)
+
 
 class Shape:
     def __init__(self, type: ShapeKind):
@@ -45,10 +46,10 @@ class Shape:
         return self._memo_outline
 
     def id(self):
-        self._id
+        return self._id
 
     def type(self):
-        self._type
+        return self._type
 
     def traverse(
         self,
@@ -97,7 +98,7 @@ class Shape:
 
         for shape in self.children:
             shape.draw(painter)
-    
+
     def contains_point(self, point: QPoint):
         return False
 
