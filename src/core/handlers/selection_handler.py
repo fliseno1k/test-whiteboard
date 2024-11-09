@@ -7,15 +7,12 @@ if TYPE_CHECKING:
     from PySide6.QtGui import QMouseEvent
 
     from ..editor import Editor
-    from ..shapes import Shape
 
 
 class SelectionHandler(AbstractHandler):
 
     def __init__(self, id: str):
         super().__init__(id)
-
-        self._deselect_on_up: List[Shape] = []
 
     def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
         position = event.position()
@@ -24,7 +21,7 @@ class SelectionHandler(AbstractHandler):
 
         if shape:
             if not editor.selection.is_selected(shape):
-                editor.selection.select([shape])
+                editor.selection.select([shape], True)
         else:
             editor.selection.deselect_all()
 
@@ -37,17 +34,15 @@ class SelectionHandler(AbstractHandler):
 
     def on_mouse_move_event(self, editor: Editor, event: QMouseEvent):
         page = editor.current_page()
+
         if page and editor.selection.size() == 1:
             shape = editor.selection.get_shapes()[0]
 
             manipulator = editor.manipulator_manager.get(shape.type())
-            if manipulator and manipulator.on_mouse_move_event(editor, shape, event):
-                self._deselect_on_up.clear()
+            if manipulator:
+                manipulator.on_mouse_move_event(editor, shape, event)
 
     def on_mouse_release_event(self, editor: Editor, event: QMouseEvent):
-        editor.selection.deselect(self._deselect_on_up)
-        self._deselect_on_up.clear()
-
         if editor.selection.size() == 1:
             shape = editor.selection.get_shapes()[0]
 
