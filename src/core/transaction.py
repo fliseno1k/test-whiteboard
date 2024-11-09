@@ -98,10 +98,10 @@ class AssignMutation(Mutation):
         self.__shape = shape
         self.__field = field
         self.__value = value
-        self.__old_value = shape[field]
+        self.__old_value = getattr(shape, field)
 
     def apply(self, store: Store):
-        self.__shape[self.__field] = self.__value
+        setattr(self.__shape, self.__field, self.__value)
         store.update(self.__shape)
 
     def unapply(self, store: Store):
@@ -166,13 +166,19 @@ class Transaction:
 
         old_value = getattr(shape, field)
         if old_value == value:
-            return True
+            return False
 
         existing_mutation = next(
             (
                 mutation
                 for mutation in self.__mutations
-                if isinstance(mutation, AssignMutation)
+                if (
+                    isinstance(mutation, AssignMutation)
+                    and hasattr(mutation, "__shape")
+                    and getattr(mutation, "__shape") == shape
+                    and hasattr(mutation, "__field")
+                    and getattr(mutation, "__field") == field
+                )
             ),
             None,
         )

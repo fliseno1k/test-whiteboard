@@ -2,6 +2,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from ..macro import move_shapes
+from ..transform import ActionKind
+
+from .abstract_controller import AbstractController
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QMouseEvent
@@ -9,8 +12,6 @@ if TYPE_CHECKING:
     from ..editor import Editor
     from ..manipulators.abstract_manipulator import AbstractManipulator
     from ..shapes import Shape
-
-    from .abstract_controller import AbstractController
 
 
 class BoxMoveController(AbstractController):
@@ -22,13 +23,14 @@ class BoxMoveController(AbstractController):
         return editor.selection.size() == 1 and editor.selection.is_selected(shape)
 
     def initialize(self, editor: Editor, shape: Shape, event: QMouseEvent):
-        editor.transform.start_action()
+        editor.transform.start_action(ActionKind.MOVE)
 
     def update(self, editor: Editor, shape: Shape, event: QMouseEvent):
         page = editor.current_page()
 
         editor.transform.transact(
-            lambda tx: move_shapes(tx, page, [shape], 0, 0))
+            lambda tx: move_shapes(tx, page, [shape], self._dx_step, self._dy_step)
+        )
 
     def finalize(self, editor: Editor, shape: Shape, event: QMouseEvent):
         editor.transform.end_action()

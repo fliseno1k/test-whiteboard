@@ -9,10 +9,10 @@ from utils.unique_id import unique_id
 
 
 class ShapeKind(Enum):
-    BOX = ("box",)
-    CONNECTOR = ("connector",)
-    PAGE = ("page",)
-    RECTANGLE = ("rectangle",)
+    BOX = "box"
+    CONNECTOR = "connector"
+    PAGE = "page"
+    RECTANGLE = "rectangle"
 
 
 class Shape:
@@ -61,7 +61,7 @@ class Shape:
         for child in self.children:
             child.traverse(fn, self)
 
-    def get_shape_at(self, point: QPoint) -> Optional[Shape]:
+    def get_shape_at(self, point: List[int]) -> Optional[Shape]:
         for shape in self.children:
             result = shape.get_shape_at(point)
 
@@ -99,7 +99,7 @@ class Shape:
         for shape in self.children:
             shape.draw(painter)
 
-    def contains_point(self, point: QPoint):
+    def contains_point(self, point: List[int]):
         return False
 
 
@@ -136,9 +136,8 @@ class Box(Shape):
             [self.left, self.top],
         ]
 
-    def contains_point(self, point: QPoint):
-        x = point.x()
-        y = point.y()
+    def contains_point(self, point: List[int]):
+        x, y = point[0], point[1]
 
         return (self.top < y and self.bottom > y) and (self.left < x and self.right > x)
 

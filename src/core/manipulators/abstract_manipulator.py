@@ -1,4 +1,5 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:
@@ -8,8 +9,13 @@ if TYPE_CHECKING:
     from ..editor import Editor
     from ..shapes import Shape
 
+    from .manipulator_manager import ManipulatorManager
 
-class AbstractManipulator():
+
+class AbstractManipulator(ABC):
+
+    @abstractmethod
+    def define(manager: ManipulatorManager): ...
 
     def __init__(self):
         self._controllers: List[AbstractController] = []
@@ -19,13 +25,20 @@ class AbstractManipulator():
         return next((True for ctrl in self._controllers if ctrl.is_dragging()), False)
 
     def mouse_in(self, editor: Editor, shape: Shape, event: QMouseEvent):
-        return next((True for ctrl in self._controllers if ctrl.mouse_in(editor, shape, event)), False)
+        return next(
+            (True for ctrl in self._controllers if ctrl.mouse_in(editor, shape, event)),
+            False,
+        )
 
     def on_mouse_press_event(self, editor: Editor, shape: Shape, event: QMouseEvent):
         handled = False
 
         for ctrl in self._controllers:
-            if ctrl.active(editor, shape) and ctrl.mouse_in(editor, shape, event) and ctrl.on_mouse_press_event(editor, shape, event):
+            if (
+                ctrl.active(editor, shape)
+                and ctrl.mouse_in(editor, shape, event)
+                and ctrl.on_mouse_press_event(editor, shape, event)
+            ):
                 handled = True
                 self._dragging_controller = ctrl
                 break
@@ -42,10 +55,10 @@ class AbstractManipulator():
         if not self._dragging_controller:
             return False
 
-        self._dragging_controller.on_mouse_release_event(editor, shape, event)
+        handled = self._dragging_controller.on_mouse_release_event(editor, shape, event)
         self._dragging_controller = None
 
-        return True
+        return handled
 
     def draw(self, editor: Editor, shape: Shape):
         if self._dragging_controller:

@@ -23,7 +23,9 @@ class AbstractController(ABC):
         return False
 
     def mouse_in(self, editor: Editor, shape: Shape, event: QMouseEvent):
-        return shape.contains_point(event.position())
+        position = event.position()
+
+        return shape.contains_point([position.x(), position.y()])
 
     def initialize(self, editor: Editor, shape: Shape, event: QMouseEvent):
         pass
@@ -38,17 +40,20 @@ class AbstractController(ABC):
         pass
 
     def on_mouse_press_event(self, editor: Editor, shape: Shape, event: QMouseEvent):
+        position = event.position()
+        x, y = position.x(), position.y()
+
         if not self.mouse_in(editor, shape, event):
             return False
 
         self._reset()
 
         self._dragging = True
-        self._drag_start_point = event.position()
-        self._drag_prev_point = event.position()
-        self._drag_point = event.position()
+        self._drag_start_point = [x, y]
+        self._drag_prev_point = [x, y]
+        self._drag_point = [x, y]
 
-        self.initialize(editor, shape, event)        
+        self.initialize(editor, shape, event)
         self.update(editor, shape, event)
 
         editor.updated()
@@ -59,8 +64,15 @@ class AbstractController(ABC):
         if not self._dragging:
             return False
 
+        position = event.position()
+
         self._drag_prev_point = self._drag_point
-        self._drag_point = event.position()
+        self._drag_point = [position.x(), position.y()]
+
+        self._dx = self._drag_point[0] - self._drag_start_point[0]
+        self._dy = self._drag_point[1] - self._drag_start_point[1]
+        self._dx_step = self._drag_point[0] - self._drag_prev_point[0]
+        self._dy_step = self._drag_point[1] - self._drag_prev_point[1]
 
         self.update(editor, shape, event)
 
@@ -82,3 +94,8 @@ class AbstractController(ABC):
         self._drag_start_point: List[int] = [-1, -1]
         self._drag_prev_point: List[int] = [-1, -1]
         self._drag_point: List[int] = [-1, -1]
+
+        self._dx: int = 0
+        self._dy: int = 0
+        self._dx_step: int = 0
+        self._dy_step: int = 0

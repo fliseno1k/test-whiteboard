@@ -14,6 +14,3 @@ class ManipulatorManager(metaclass=Singleton):
 
     def get(self, type: str):
         return self._manipulators.get(type)
-
-
-manipulator_manager = ManipulatorManager()

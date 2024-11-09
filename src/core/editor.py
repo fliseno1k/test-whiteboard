@@ -3,9 +3,12 @@ from typing import TYPE_CHECKING, Optional, Dict, Callable
 
 from .events import EventKind, setup_events
 from .factory import ShapeFactory
+from .manipulators.manipulator_manager import ManipulatorManager
+from .manipulators.box_manipulator import BoxManipulator
 from .selection import Selection
 from .store import Store
 from .transform import Transform
+
 
 if TYPE_CHECKING:
     from PySide6.QtGui import QPainter, QMouseEvent
@@ -28,10 +31,12 @@ class Editor:
         self.selection = Selection(self)
         self.transform = Transform(self.store)
         self.shape_factory = ShapeFactory(self)
+        self.manipulator_manager = ManipulatorManager()
 
-        self.__initialize_state()
+        self.__initialize_action_handlers()
         self.__initialize_events()
         self.__initialize_handlers()
+        self.__initialize_manipulators()
 
     def active_handler(self):
         return self.__active_handler
@@ -87,7 +92,7 @@ class Editor:
 
         self.__active_handler.on_mouse_double_click_event(self, event)
 
-    def __initialize_state(self):
+    def __initialize_action_handlers(self):
         self.transform.on_action.add_listener(self.updated)
         self.transform.on_transaction.add_listener(self.updated)
 
@@ -103,3 +108,6 @@ class Editor:
         if handler_id and (handler_id in self.__handlers.keys()):
             self.__active_handler = self.__handlers.get(handler_id)
             self.__events[EventKind.ACTIVE_HANDLER_CHANGED].emit()
+
+    def __initialize_manipulators(self):
+        BoxManipulator.define(self.manipulator_manager)
