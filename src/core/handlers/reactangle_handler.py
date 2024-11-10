@@ -24,7 +24,15 @@ class RectangleHandler(AbstractHandler):
             return
 
         center = event.position()
-        self.__shape = editor.shape_factory.create_rectangle([center.x(), center.y()])
+        rectangle = editor.shape_factory.create_rectangle([center.x(), center.y()])
+        rectangle.update()
+
+        print(editor.viewport.rect_inside(rectangle.bounding_rect()))
+
+        if not editor.viewport.rect_inside(rectangle.bounding_rect()):
+            return
+
+        self.__shape = rectangle
 
         editor.transform.start_action(ActionKind.INSERT)
         editor.transform.transact(lambda tx: add_shape(tx, self.__shape, page))

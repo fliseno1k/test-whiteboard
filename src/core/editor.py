@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Dict, Callable
+from typing import TYPE_CHECKING, Optional, Dict, Callable, List
 
 from .events import EventKind, setup_events
 from .factory import ShapeFactory
@@ -8,6 +8,7 @@ from .manipulators.box_manipulator import BoxManipulator
 from .selection import Selection
 from .store import Store
 from .transform import Transform
+from .viewport import Viewport
 
 
 if TYPE_CHECKING:
@@ -32,6 +33,7 @@ class Editor:
         self.transform = Transform(self.store)
         self.shape_factory = ShapeFactory(self)
         self.manipulator_manager = ManipulatorManager()
+        self.viewport = Viewport()
 
         self.__initialize_action_handlers()
         self.__initialize_events()
@@ -58,6 +60,9 @@ class Editor:
 
     def updated(self):
         self.__events[EventKind.UPDATED].emit()
+
+    def resize(self, size: List[int]):
+        self.viewport.resize(size)
 
     def activate_handler(self, handler_id: str):
         self.__active_handler = None

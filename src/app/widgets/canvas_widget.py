@@ -31,6 +31,11 @@ class CanvasWidget(QWidget):
 
         painter.end()
 
+    def resizeEvent(self, event):
+        size = self.size()
+
+        self.__editor.resize([size.width(), size.height()])
+
     def __draw_grid(self, painter: QPainter):
         rect = self.rect()
         left = rect.left()

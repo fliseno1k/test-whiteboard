@@ -38,6 +38,7 @@ class Shape:
 
         self._pixmap: Optional[QPixmap] = None
         self._memo_outline: List[List[int]] = []
+        self._memo_bounding_rect: List[List[int]] = []
 
     @property
     def right(self):
@@ -47,9 +48,11 @@ class Shape:
     def bottom(self):
         return self.top + self.height
 
-    @property
     def outline(self):
         return copy(self._memo_outline)
+
+    def bounding_rect(self):
+        return self._memo_bounding_rect
 
     def id(self):
         return self._id
@@ -90,6 +93,7 @@ class Shape:
             child.update()
 
     def render(self, pixmap: QPixmap):
+        self.compute_bounding_rect()
         self.render_outline(pixmap)
         self.render_default(pixmap)
 
@@ -106,6 +110,12 @@ class Shape:
 
         for shape in self.children:
             shape.draw(painter)
+
+    def compute_bounding_rect(self):
+        self._memo_bounding_rect = [
+            [self.left, self.top],
+            [self.right, self.bottom],
+        ]
 
     def contains_point(self, point: List[int]):
         return False
@@ -143,7 +153,6 @@ class Box(Shape):
             [self.right, self.top],
             [self.right, self.bottom],
             [self.left, self.bottom],
-            [self.left, self.top],
         ]
 
     def contains_point(self, point: List[int]):

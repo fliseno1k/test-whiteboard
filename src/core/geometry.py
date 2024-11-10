@@ -55,3 +55,12 @@ def distance_to_line(point: List[int], line: List[List[int]]):
     )
 
     return math.sqrt(squared)
+
+
+def is_inside(inner_rect: List[List[int]], outer_rect: List[List[int]]):
+    return (
+        inner_rect[0][0] >= outer_rect[0][0]
+        and inner_rect[1][0] <= outer_rect[1][0]
+        and inner_rect[0][1] >= outer_rect[0][1]
+        and inner_rect[1][1] <= outer_rect[1][1]
+    )
