@@ -1,12 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from copy import copy
+from typing import TYPE_CHECKING, Optional, List
 
 from utils.rand_color import random_color
 
+from .geometry import path_bounding_rect, rect_width, rect_height
 from .shapes import Connector, Rectangle
 
 if TYPE_CHECKING:
     from .editor import Editor
+    from .shapes import Shape
 
 
 class ShapeFactory:
@@ -25,7 +28,21 @@ class ShapeFactory:
 
         return shape
 
-    def create_connector(self):
+    def create_connector(
+        self,
+        tail: Optional[Shape],
+        head: Optional[Shape],
+        points: List[List[int]],
+    ):
         shape = Connector()
+        shape.tail = tail
+        shape.head = head
+        shape.path = copy(points)
+
+        rect = path_bounding_rect(shape.path)
+        shape.left = rect[0][0]
+        shape.top = rect[0][1]
+        shape.width = rect_width(rect)
+        shape.height = rect_height(rect)
 
         return shape

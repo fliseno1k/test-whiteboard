@@ -18,7 +18,7 @@ def main():
     app = QApplication(sys.argv)
 
     window = MainWindow()
-    window.resize(800, 600)
+    window.setFixedSize(800, 600)
     window.show()
 
     timer = QTimer()

@@ -27,6 +27,8 @@ class BoxMoveController(AbstractController):
 
     def update(self, editor: Editor, shape: Shape, event: QMouseEvent):
         page = editor.current_page()
+        if not page:
+            return
 
         editor.transform.transact(
             lambda tx: move_shapes(tx, page, [shape], self._dx_step, self._dy_step)

@@ -19,23 +19,22 @@ class RectangleHandler(AbstractHandler):
         self.__shape: Optional[Shape] = None
 
     def initialize(self, editor: Editor, event: QMouseEvent):
-        if not editor.current_page():
+        page = editor.current_page()
+        if not page:
             return
 
         center = event.position()
         self.__shape = editor.shape_factory.create_rectangle([center.x(), center.y()])
 
         editor.transform.start_action(ActionKind.INSERT)
-        editor.transform.transact(
-            lambda tx: add_shape(tx, self.__shape, editor.current_page())
-        )
+        editor.transform.transact(lambda tx: add_shape(tx, self.__shape, page))
 
     def finalize(self, editor: Editor, event: QMouseEvent):
         if not self.__shape:
             return
 
         editor.transform.end_action()
-    
+
     def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
         return
 

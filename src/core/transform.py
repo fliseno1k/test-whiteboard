@@ -37,7 +37,8 @@ class Action:
             tx.apply()
 
     def unapply(self):
-        None
+        for tx in self.__transactions:
+            tx.unapply()
 
 
 class Transform:

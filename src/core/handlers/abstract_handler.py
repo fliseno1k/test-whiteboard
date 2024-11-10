@@ -29,11 +29,13 @@ class AbstractHandler(ABC):
         pass
 
     def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
+        position = event.position()
+
         self._reset()
 
         self._dragging = True
-        self._drag_point = event.position()
-        self._drag_start_point = event.position()
+        self._drag_point = [position.x(), position.y()]
+        self._drag_start_point = [position.x(), position.y()]
 
         self.initialize(editor, event)
         editor.updated()
@@ -42,9 +44,11 @@ class AbstractHandler(ABC):
         if not self._dragging:
             return
 
-        self._drag_point = event.position()
+        position = event.position()
 
-        self.update()
+        self._drag_point = [position.x(), position.y()]
+
+        self.update(editor, event)
         editor.updated()
 
     def on_mouse_release_event(self, editor: Editor, event: QMouseEvent):

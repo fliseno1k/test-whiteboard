@@ -105,7 +105,28 @@ class AssignMutation(Mutation):
         store.update(self.__shape)
 
     def unapply(self, store: Store):
-        self.__shape[self.__field] = self.__old_value
+        setattr(self.__shape, self.__field, self.__old_value)
+        store.update(self.__shape)
+
+    def update_value(self, new_value: any):
+        self.__value = new_value
+
+
+class AssignRefMutation(Mutation):
+    def __init__(self, shape: Shape, field: str, value: any):
+        super().__init__(MutationType.ASSIGN)
+
+        self.__shape = shape
+        self.__field = field
+        self.__value = value
+        self.__old_value = getattr(shape, field)
+
+    def apply(self, store: Store):
+        setattr(self.__shape, self.__field, self.__value)
+        store.update(self.__shape)
+
+    def unapply(self, store: Store):
+        setattr(self.__shape, self.__field, self.__old_value)
         store.update(self.__shape)
 
     def update_value(self, new_value: any):
@@ -188,6 +209,40 @@ class Transaction:
             existing_mutation.apply(self.__store)
         else:
             assign_mutation = AssignMutation(shape, field, copy(value))
+            assign_mutation.apply(self.__store)
+
+            self.__mutations.append(assign_mutation)
+
+        return True
+
+    def assign_ref(self, shape: Shape, field: str, value: any):
+        if not hasattr(shape, field):
+            return False
+
+        old_value = getattr(shape, field)
+        if old_value == value:
+            return False
+
+        existing_mutation = next(
+            (
+                mutation
+                for mutation in self.__mutations
+                if (
+                    isinstance(mutation, AssignRefMutation)
+                    and hasattr(mutation, "__shape")
+                    and getattr(mutation, "__shape") == shape
+                    and hasattr(mutation, "__field")
+                    and getattr(mutation, "__field") == field
+                )
+            ),
+            None,
+        )
+
+        if existing_mutation:
+            existing_mutation.update_value(value)
+            existing_mutation.apply(self.__store)
+        else:
+            assign_mutation = AssignRefMutation(shape, field, value)
             assign_mutation.apply(self.__store)
 
             self.__mutations.append(assign_mutation)
