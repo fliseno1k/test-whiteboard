@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from ..constraints import intersects
 from ..macro import move_shapes
 from ..transform import ActionKind
 
@@ -27,8 +28,6 @@ class BoxMoveController(AbstractController):
 
     def update(self, editor: Editor, shape: Shape, event: QMouseEvent):
         page = editor.current_page()
-        if not page:
-            return
 
         editor.transform.transact(
             lambda tx: move_shapes(tx, page, [shape], self._dx_step, self._dy_step)
@@ -36,6 +35,3 @@ class BoxMoveController(AbstractController):
 
     def finalize(self, editor: Editor, shape: Shape, event: QMouseEvent):
         editor.transform.end_action()
-
-    def draw(self, editor: Editor, shape: Shape, event: QMouseEvent):
-        pass

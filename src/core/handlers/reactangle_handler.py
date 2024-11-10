@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
+from ..constraints import inside
 from ..macro import add_shape
 from ..transform import ActionKind
+
 from .abstract_handler import AbstractHandler
 
 if TYPE_CHECKING:
@@ -26,11 +28,6 @@ class RectangleHandler(AbstractHandler):
         center = event.position()
         rectangle = editor.shape_factory.create_rectangle([center.x(), center.y()])
         rectangle.update()
-
-        print(editor.viewport.rect_inside(rectangle.bounding_rect()))
-
-        if not editor.viewport.rect_inside(rectangle.bounding_rect()):
-            return
 
         self.__shape = rectangle
 

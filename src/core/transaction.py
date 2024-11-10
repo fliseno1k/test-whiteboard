@@ -62,7 +62,9 @@ class InsertChildMutation(Mutation):
         store.update(self.__child)
 
     def unapply(self, store: Store):
-        self.__parent.children.pop()
+        if len(self.__parent.children):
+            self.__parent.children.pop()
+
         self.__child.parent = None
 
         store.update(self.__parent)

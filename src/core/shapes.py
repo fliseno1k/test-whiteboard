@@ -52,6 +52,9 @@ class Shape:
         return copy(self._memo_outline)
 
     def bounding_rect(self):
+        if not self._memo_bounding_rect:
+            self.compute_bounding_rect()
+
         return self._memo_bounding_rect
 
     def id(self):
@@ -86,14 +89,15 @@ class Shape:
 
     def update(self):
         del self._pixmap
-        self._pixmap = QPixmap(self.width, self.height)
+        self._pixmap = QPixmap(max(self.width, 1), max(self.height, 1))
         self.render(self._pixmap)
+
+        self.compute_bounding_rect()
 
         for child in self.children:
             child.update()
 
     def render(self, pixmap: QPixmap):
-        self.compute_bounding_rect()
         self.render_outline(pixmap)
         self.render_default(pixmap)
 
@@ -111,14 +115,14 @@ class Shape:
         for shape in self.children:
             shape.draw(painter)
 
+    def contains_point(self, point: List[int]):
+        return False
+
     def compute_bounding_rect(self):
         self._memo_bounding_rect = [
             [self.left, self.top],
             [self.right, self.bottom],
         ]
-
-    def contains_point(self, point: List[int]):
-        return False
 
 
 class Page(Shape):
@@ -127,6 +131,8 @@ class Page(Shape):
         super().__init__(type)
 
     def update(self):
+        self.compute_bounding_rect()
+
         for child in self.children:
             child.update()
 
@@ -169,7 +175,7 @@ class Path(Shape):
         self.path: List[List[int]] = []
 
     def contains_point(self, point: List[int]):
-        return get_nearest_segment(point, self.outline, 10) > -1
+        return get_nearest_segment(point, self.outline(), 10) > -1
 
     def render_outline(self, pixmap):
         self._memo_outline = copy(self.path)
@@ -186,8 +192,6 @@ class Line(Path):
 
         rect = path_bounding_rect(self.path)
 
-        pixmap.fill(Qt.GlobalColor.transparent)
-
         pen = QPen()
         pen.setWidth(2)
         pen.setColor(Qt.GlobalColor.black)
@@ -195,10 +199,15 @@ class Line(Path):
         pen.setCapStyle(Qt.PenCapStyle.RoundCap)
         pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
 
+        pixmap.fill(Qt.GlobalColor.transparent)
+
         painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        if not painter.isActive():
+            return
+
         painter.setPen(pen)
         painter.setBackground(Qt.BrushStyle.NoBrush)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         painter.drawLine(
             self.path[0][0] - rect[0][0],
@@ -206,7 +215,6 @@ class Line(Path):
             self.path[1][0] - rect[0][0],
             self.path[1][1] - rect[0][1],
         )
-        painter.end()
 
 
 class Rectangle(Box):

@@ -7,7 +7,7 @@ from .shapes import Page, Shape
 class Store:
     def __init__(self):
         self.__idIndex: Dict[str, Shape] = {}
-        self.__root: Optional[Page] = Page()
+        self.__root: Page = Page()
 
     def root(self):
         return self.__root

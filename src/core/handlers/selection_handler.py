@@ -17,7 +17,6 @@ class SelectionHandler(AbstractHandler):
     def on_mouse_press_event(self, editor: Editor, event: QMouseEvent):
         position = event.position()
         shape = self._get_shape_at(editor, [position.x(), position.y()])
-        page = editor.current_page()
 
         if shape:
             if not editor.selection.is_selected(shape):
@@ -25,7 +24,7 @@ class SelectionHandler(AbstractHandler):
         else:
             editor.selection.deselect_all()
 
-        if page and editor.selection.size() == 1:
+        if editor.selection.size() == 1:
             shape = editor.selection.get_shapes()[0]
             manipulator = editor.manipulator_manager.get(shape.type())
 
@@ -33,9 +32,7 @@ class SelectionHandler(AbstractHandler):
                 manipulator.on_mouse_press_event(editor, shape, event)
 
     def on_mouse_move_event(self, editor: Editor, event: QMouseEvent):
-        page = editor.current_page()
-
-        if page and editor.selection.size() == 1:
+        if editor.selection.size() == 1:
             shape = editor.selection.get_shapes()[0]
 
             manipulator = editor.manipulator_manager.get(shape.type())
@@ -51,9 +48,6 @@ class SelectionHandler(AbstractHandler):
                 manipulator.on_mouse_release_event(editor, shape, event)
 
     def _get_shape_at(self, editor: Editor, point: List[int]):
-        if not editor.current_page():
-            return None
-
         return editor.current_page().get_shape_at(point)
 
     def _reset(self):

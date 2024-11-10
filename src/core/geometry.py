@@ -1,4 +1,5 @@
 import math
+from copy import copy
 from typing import List
 
 
@@ -64,3 +65,21 @@ def is_inside(inner_rect: List[List[int]], outer_rect: List[List[int]]):
         and inner_rect[0][1] >= outer_rect[0][1]
         and inner_rect[1][1] <= outer_rect[1][1]
     )
+
+
+def intersects(rect1: List[List[int]], rect2: List[List[int]]):
+    return not (
+        rect1[1][0] <= rect2[0][0]
+        or rect1[0][0] >= rect2[1][0]
+        or rect1[1][1] <= rect2[0][1]
+        or rect1[0][1] >= rect2[1][1]
+    )
+
+
+def move_rect(rect: List[List[int]], dx: int, dy: int):
+    rect_copy = copy(rect)
+
+    return [
+        [rect_copy[0][0] + dx, rect_copy[0][1] + dy],
+        [rect_copy[1][0] + dx, rect_copy[1][1] + dy],
+    ]

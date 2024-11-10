@@ -25,10 +25,8 @@ class ConnectorHandler(AbstractHandler):
 
     def initialize(self, editor: Editor, event: QMouseEvent):
         page = editor.current_page()
-        if not page:
-            return
-
         position = event.position()
+
         self.__tail = page.get_shape_at([position.x(), position.y()])
         self.__shape = editor.shape_factory.create_connector(
             self.__tail,
@@ -41,9 +39,6 @@ class ConnectorHandler(AbstractHandler):
 
     def update(self, editor: Editor, event: QMouseEvent):
         page = editor.current_page()
-        if not page:
-            return
-
         position = event.position()
         shape = page.get_shape_at([position.x(), position.y()], [self.__shape])
 
